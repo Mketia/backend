@@ -6,7 +6,7 @@ from app.db import get_db
 from app.deps import require_admin
 from app.routes.books import _serialize_book
 
-router = APIRouter(dependencies=[Depends(require_admin)])
+router = APIRouter()
 
 
 def _serialize_read(doc: dict[str, Any]) -> dict[str, Any]:
