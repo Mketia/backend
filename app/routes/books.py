@@ -34,7 +34,7 @@ async def create_book(payload: BookIn, db=Depends(get_db)):
     return _serialize_book(created)
 
 
-@router.get("", response_model=List[BookOut])
+@router.get("", response_model=dict)
 async def list_books(
     db=Depends(get_db),
     title: Optional[str] = Query(default=None),
@@ -65,9 +65,11 @@ async def list_books(
     sort_field = "created_at" if sort_by not in {"created_at", "read_count", "title"} else sort_by
     sort_direction = -1 if sort_dir.lower() == "desc" else 1
 
+    total_books = await db.books.count_documents(filters)
     cursor = db.books.find(filters).sort(sort_field, sort_direction).skip(skip).limit(limit)
-    items = [ _serialize_book(doc) async for doc in cursor ]
-    return items
+    items = [_serialize_book(doc) async for doc in cursor]
+
+    return {"books": items, "total": total_books}
 
 
 @router.get("/{book_id}", response_model=BookOut)
