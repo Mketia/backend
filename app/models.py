@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 class UserCreate(BaseModel):
     email: str
     password: str
+    role: str = "user"  # Default role is 'user'
 
 
 class UserPublic(BaseModel):

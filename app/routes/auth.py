@@ -21,7 +21,7 @@ async def register(payload: UserCreate, db=Depends(get_db)):
     user_doc = {
         "email": payload.email.lower(),
         "hashed_password": get_password_hash(payload.password),
-        "role": "user",
+        "role": payload.role,  # Use the role from the payload
     }
     result = await db.users.insert_one(user_doc)
     created = await db.users.find_one({"_id": result.inserted_id})
